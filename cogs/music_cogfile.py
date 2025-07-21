@@ -167,6 +167,8 @@ class music_cog(commands.Cog):
         # url = info['formats'][0]['url'] # Old format
         url = info["url"]
         thumb = info['thumbnails'][0]['url']
+        video_id = info['id']
+        # print(video_id)
         try:
             duration = info['duration']
         except Exception as e:
@@ -175,7 +177,7 @@ class music_cog(commands.Cog):
         # print(duration)
 
         # Add the audio to the queue
-        session.q.append_to_queue(title, url, thumb, duration)
+        session.q.append_to_queue(title, url, thumb, duration, video_id)
 
         if not os.path.exists(FFMPEG_PATH):
             await ctx.send(embed= discord.Embed(title='FFmpeg not found. Check your installation.', color=discord.Color.blurple()))
@@ -655,16 +657,17 @@ class music_cog(commands.Cog):
                                 user_id INTEGER,
                                 audio_title TEXT,
                                 audio_url TEXT,
-                                audio_thumb TEXT
+                                audio_thumb TEXT,
+                                audio_id TEXT
                             )
                         """)
 
                         # Insert a record into the new table
                         insert_query = f""" 
-                                            INSERT INTO {playlist_name} (user_id, audio_title, audio_url, audio_thumb) 
-                                            VALUES (?, ?, ?, ?);
+                                            INSERT INTO {playlist_name} (user_id, audio_title, audio_url, audio_thumb, audio_id) 
+                                            VALUES (?, ?, ?, ?, ?);
                                             """
-                        playlist_data = [(user_id, audio['title'], audio['url'], audio['thumb']) for audio in session.q.queue]
+                        playlist_data = [(user_id, audio['title'], audio['url'], audio['thumb'], audio['video_id']) for audio in session.q.queue]
 
                         # Execute the query for multiple records and commiting it
                         cursor.executemany(insert_query, playlist_data)
@@ -734,7 +737,10 @@ class music_cog(commands.Cog):
                 item_title = item[2]
                 # item_url = item[3]
                 # item_thumb = item[4]
-                await self.play(ctx, is_playlist=True ,arg=item_title) ######### need to add a parameter for queue message only for this
+                item_id = item[5]
+                url_search = f'https://www.youtube.com/watch?v={item_id}'
+                # await self.play(ctx, is_playlist=True ,arg=item_title) ######### need to add a parameter for queue message only for this
+                await self.play(ctx, is_playlist=True ,arg=url_search)
                 if item == all_items[1]: # Play the first item in the playlist while loading the others to the queue
                     print(f'from load_playlist: first item loaded')
                     print(f'from load_playlist: is next available - {session.q.is_next_available()}')

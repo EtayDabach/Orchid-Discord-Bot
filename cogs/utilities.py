@@ -17,8 +17,8 @@ class Queue():
 
 
     # Append audio to the queue as a dict
-    def append_to_queue(self, audio_title:str, audio_url:str, audio_thumb:str, audio_duration=0) -> None:
-        self.queue.append({'title':audio_title, 'url':audio_url, 'thumb':audio_thumb, 'duration':audio_duration}) # Append the element as a dict , added duration (in seconds)
+    def append_to_queue(self, audio_title:str, audio_url:str, audio_thumb:str, audio_duration=0, audio_id='') -> None:
+        self.queue.append({'title':audio_title, 'url':audio_url, 'thumb':audio_thumb, 'duration':audio_duration, 'video_id':audio_id}) # Append the element as a dict , added duration (in seconds)
         if len(self.queue) == 1:
             self.current_audio = self.queue[0] 
 
