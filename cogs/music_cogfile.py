@@ -30,7 +30,7 @@ class music_cog(commands.Cog):
         self.bot = bot
         
         # Desiered options for youtube videos 
-        self.YTDLP_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'}
+        self.YTDLP_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True'} # noplaylist Ture/False
 
         # Reconnect ffmpeg in case of disconnection.
         self.FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
